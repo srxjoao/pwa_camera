@@ -1,40 +1,38 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PWA - Câmera</title>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PWA - Camera</title>
 
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="/images/camera_256.png">
-  <link rel="icon" href="/images/camera_256.png" sizes="256x256">
-  <meta name="theme-color" content="white">
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="/images/icon-256_ios.png" />
+  <link rel="icon" href="/images/camera_256.png" sizes="256x256" />
+  <meta name="theme-color" content="white" />
 </head>
+
 <body>
-  <!-- Camera -->
+  <!-- === Câmera === -->
   <main id="camera">
-    <!-- Lente -->
+    <!-- Sensor da câmera -->
     <canvas id="camera--sensor"></canvas>
 
-    <!-- Visualização -->
+    <!-- Visualização da câmera -->
     <video id="camera--view" autoplay playsinline></video>
 
-    <!-- Resultado -->
-    <img src="//:0" alt="" id="camera--output">
+    <!-- Resultado da foto -->
+    <img src="#" alt="" id="camera--output" />
 
-    <!-- Botões -->
-    <div id="controls">
-      <button id="camera--trigger">Tirar Foto</button>
-      <button id="camera--switch">Trocar Câmera</button>
-    </div>
+    <!-- Botão de tirar foto -->
+    <button id="camera--trigger">Tirar foto</button>
 
-    <!-- Galeria -->
-    <section id="gallery">
-      <h2>Últimas Fotos</h2>
-      <div id="photo-gallery"></div>
-    </section>
+    <!-- Botão de trocar câmera -->
+    <button id="camera--switch">Trocar câmera</button>
+
+    <!-- Galeria das últimas fotos -->
+    <section id="gallery"></section>
   </main>
 
   <script src="js/main.js" type="module"></script>
