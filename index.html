@@ -1,40 +1,62 @@
 <!DOCTYPE html>
-<html lang="pt">
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PWA - Camera</title>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#222222" />
+    <title>📸 Diário Fotográfico Offline</title>
 
-  <link rel="stylesheet" href="/css/style.css" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="apple-touch-icon" href="/images/icon-256_ios.png" />
-  <link rel="icon" href="/images/camera_256.png" sizes="256x256" />
-  <meta name="theme-color" content="white" />
-</head>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" type="image/png" href="icon-192x192.png" />
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
 
-<body>
-  <!-- === Câmera === -->
-  <main id="camera">
-    <!-- Sensor da câmera -->
-    <canvas id="camera--sensor"></canvas>
+  <body>
+    <header>
+      <h1>📔 Diário Fotográfico Offline</h1>
+      <nav>
+        <button id="btnCamera">Nova Foto</button>
+        <button id="btnGallery">Ver Galeria</button>
+      </nav>
+    </header>
 
-    <!-- Visualização da câmera -->
-    <video id="camera--view" autoplay playsinline></video>
+    <!-- Seção da Câmera -->
+    <section id="cameraSection">
+      <h2>Capturar Foto</h2>
+      <video id="video" autoplay playsinline></video>
+      <canvas id="canvas" class="hidden"></canvas>
 
-    <!-- Resultado da foto -->
-    <img src="#" alt="" id="camera--output" />
+      <div class="controls">
+        <button id="captureButton">📸 Capturar</button>
+      </div>
 
-    <!-- Botão de tirar foto -->
-    <button id="camera--trigger">Tirar foto</button>
+      <div id="previewContainer" class="hidden">
+        <h3>Pré-visualização</h3>
+        <img id="previewImage" alt="Prévia da foto" />
+        <textarea
+          id="descriptionInput"
+          placeholder="Adicione uma descrição..."
+          maxlength="200"
+        ></textarea>
+        <button id="savePhotoButton">💾 Salvar Foto</button>
+        <button id="cancelButton">❌ Cancelar</button>
+      </div>
+    </section>
 
-    <!-- Botão de trocar câmera -->
-    <button id="camera--switch">Trocar câmera</button>
+    <!-- Seção da Galeria -->
+    <section id="gallerySection" class="hidden">
+      <h2>Minha Galeria</h2>
+      <div id="gallery" class="gallery-grid"></div>
+      <button id="backToCamera">⬅ Voltar</button>
+    </section>
 
-    <!-- Galeria das últimas fotos -->
-    <section id="gallery"></section>
-  </main>
+    <footer>
+      <p>
+        Desenvolvido por <strong>João Pedro Barbosa</strong> —
+        <em>Funciona 100% offline!</em>
+      </p>
+    </footer>
 
-  <script src="js/main.js" type="module"></script>
-</body>
+    <script src="./js/main.js"></script>
+  </body>
 </html>

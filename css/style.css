@@ -1,59 +1,106 @@
 body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  background-color: #f8f8f8;
   margin: 0;
-  padding: 0;
-}
-
-main#camera {
+  font-family: "Poppins", sans-serif;
+  background-color: #0e0e0e;
+  color: #f5f5f5;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
+  min-height: 100vh;
 }
 
-#camera--view {
-  width: 90%;
-  max-width: 400px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px #aaa;
+header {
+  background: linear-gradient(90deg, #ffd84d, #ffb300);
+  color: #000;
+  text-align: center;
+  padding: 1rem;
+  box-shadow: 0 4px 10px rgba(255, 208, 0, 0.5);
 }
 
-#camera--output {
-  width: 90%;
-  max-width: 400px;
-  margin-top: 10px;
-  border-radius: 10px;
-}
-
-button {
-  margin: 10px;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 10px;
-  background-color: #70dbff;
-  color: white;
+nav button {
+  background-color: #222;
+  color: #ffd84d;
+  border: 1px solid #ffd84d;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  margin: 0.4rem;
   cursor: pointer;
-  font-size: 16px;
+  transition: 0.3s;
+}
+nav button:hover {
+  background-color: #ffd84d;
+  color: #000;
 }
 
-button:hover {
-  background-color: #70dbff;
+.hidden {
+  display: none;
 }
 
-/* Galeria das últimas fotos */
-#gallery {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 15px;
+section {
+  padding: 1rem;
+  text-align: center;
 }
 
-#gallery img.mini {
-  width: 100px;
-  height: auto;
+video {
+  width: 90%;
+  max-width: 400px;
   border-radius: 10px;
-  border: 2px solid #ccc;
+  margin: 1rem 0;
+  box-shadow: 0 0 10px #ffd84d;
+}
+
+#previewContainer img {
+  width: 90%;
+  max-width: 400px;
+  border-radius: 10px;
+  margin: 0.5rem 0;
+  box-shadow: 0 0 15px #ffb300;
+}
+
+textarea {
+  width: 90%;
+  max-width: 400px;
+  height: 70px;
+  border: 1px solid #ffd84d;
+  border-radius: 10px;
+  padding: 0.5rem;
+  resize: none;
+  margin-bottom: 0.5rem;
+  background: #111;
+  color: #fff;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  margin: 1rem auto;
+  max-width: 900px;
+}
+
+.entry-card {
+  background: #1c1c1c;
+  border-radius: 10px;
+  padding: 0.5rem;
+  box-shadow: 0 0 10px rgba(255, 208, 0, 0.2);
+  transition: 0.3s;
+}
+.entry-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 15px rgba(255, 208, 0, 0.4);
+}
+.entry-card img {
+  width: 100%;
+  border-radius: 8px;
+}
+.entry-card p {
+  margin: 0.3rem 0;
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  background-color: #111;
+  font-size: 0.9rem;
+  color: #bbb;
+  margin-top: auto;
 }

@@ -1,76 +1,155 @@
-// === Registrando o Service Worker ===
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', async () => {
-    try {
-      let reg = await navigator.serviceWorker.register('/sw.js', { type: 'module' });
-      console.log('✅ Service Worker registrado com sucesso!', reg);
-    } catch (err) {
-      console.log('❌ Falha ao registrar o Service Worker:', err);
-    }
+// ================================
+// 📦 IndexedDB: salvar fotos localmente
+// ================================
+const DB_NAME = "diario_fotografico";
+const DB_VERSION = 1;
+const STORE_NAME = "entries";
+
+function openDb() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    request.onupgradeneeded = event => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME, { keyPath: "id" });
+      }
+    };
+    request.onsuccess = event => resolve(event.target.result);
+    request.onerror = event => reject(event.target.error);
   });
 }
 
-// === Variáveis e configurações iniciais ===
-let facingMode = 'user'; // "user" = frontal | "environment" = traseira
-const constraints = { video: { facingMode }, audio: false };
-let photos = []; // armazenar as últimas 3 fotos
-
-// === Capturando elementos ===
-const cameraView = document.querySelector('#camera--view');
-const cameraOutput = document.querySelector('#camera--output');
-const cameraSensor = document.querySelector('#camera--sensor');
-const cameraTrigger = document.querySelector('#camera--trigger');
-const switchBtn = document.querySelector('#camera--switch');
-const gallery = document.querySelector('#gallery');
-
-// === Função que inicializa a câmera ===
-function cameraStart() {
-  navigator.mediaDevices
-    .getUserMedia({ video: { facingMode }, audio: false })
-    .then(function (stream) {
-      cameraView.srcObject = stream;
-    })
-    .catch(function (error) {
-      console.error('Ocorreu um erro ao acessar a câmera:', error);
-    });
+async function saveEntry(entry) {
+  const db = await openDb();
+  const tx = db.transaction(STORE_NAME, "readwrite");
+  tx.objectStore(STORE_NAME).put(entry);
+  return tx.complete;
 }
 
-// === Função para tirar foto ===
-cameraTrigger.onclick = function () {
-  cameraSensor.width = cameraView.videoWidth;
-  cameraSensor.height = cameraView.videoHeight;
-
-  cameraSensor
-    .getContext('2d')
-    .drawImage(cameraView, 0, 0, cameraSensor.width, cameraSensor.height);
-
-  const imgData = cameraSensor.toDataURL('image/webp');
-  cameraOutput.src = imgData;
-  cameraOutput.classList.add('taken');
-
-  // Armazena a foto no array (máximo 3)
-  photos.unshift(imgData);
-  if (photos.length > 3) photos.pop();
-
-  mostrarGaleria();
-};
-
-// === Mostrar as 3 últimas fotos ===
-function mostrarGaleria() {
-  gallery.innerHTML = '';
-  photos.forEach((foto) => {
-    const img = document.createElement('img');
-    img.src = foto;
-    img.classList.add('mini');
-    gallery.appendChild(img);
+async function getAllEntries() {
+  const db = await openDb();
+  const tx = db.transaction(STORE_NAME, "readonly");
+  const store = tx.objectStore(STORE_NAME);
+  return new Promise((resolve, reject) => {
+    const request = store.getAll();
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
   });
 }
 
-// === Alternar entre câmeras ===
-switchBtn.onclick = () => {
-  facingMode = facingMode === 'user' ? 'environment' : 'user';
-  cameraStart();
-};
+// ================================
+// 📸 Captura de foto com câmera
+// ================================
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const captureButton = document.getElementById("captureButton");
+const saveButton = document.getElementById("savePhotoButton");
+const cancelButton = document.getElementById("cancelButton");
+const previewContainer = document.getElementById("previewContainer");
+const previewImage = document.getElementById("previewImage");
+const descriptionInput = document.getElementById("descriptionInput");
 
-// === Inicia a câmera quando a página é carregada ===
-window.addEventListener('load', cameraStart, false);
+let currentBlob = null;
+
+// Ativar câmera
+async function startCamera() {
+  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+  video.srcObject = stream;
+}
+
+// Capturar imagem do vídeo
+captureButton.addEventListener("click", () => {
+  const context = canvas.getContext("2d");
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  canvas.toBlob(blob => {
+    currentBlob = blob;
+    previewImage.src = URL.createObjectURL(blob);
+    previewContainer.classList.remove("hidden");
+  }, "image/jpeg");
+});
+
+// Salvar foto com descrição
+saveButton.addEventListener("click", async () => {
+  const description = descriptionInput.value.trim() || "Sem descrição";
+  if (!currentBlob) return alert("Tire uma foto primeiro!");
+
+  const entry = {
+    id: Date.now(),
+    photoBlob: currentBlob,
+    description,
+    date: new Date().toISOString(),
+  };
+
+  await saveEntry(entry);
+
+  alert("📸 Foto salva com sucesso!");
+  descriptionInput.value = "";
+  previewContainer.classList.add("hidden");
+  currentBlob = null;
+  renderGallery();
+});
+
+// Cancelar preview
+cancelButton.addEventListener("click", () => {
+  previewContainer.classList.add("hidden");
+  descriptionInput.value = "";
+  currentBlob = null;
+});
+
+// ================================
+// 🖼️ Galeria de fotos
+// ================================
+async function renderGallery() {
+  const entries = await getAllEntries();
+  const galleryContainer = document.getElementById("gallery");
+  galleryContainer.innerHTML = "";
+
+  entries.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  entries.forEach(entry => {
+    const card = document.createElement("div");
+    card.className = "entry-card";
+
+    const img = document.createElement("img");
+    img.src = URL.createObjectURL(entry.photoBlob);
+
+    const desc = document.createElement("p");
+    desc.textContent = entry.description;
+
+    const date = document.createElement("small");
+    date.textContent = new Date(entry.date).toLocaleString("pt-BR");
+
+    card.append(img, desc, date);
+    galleryContainer.appendChild(card);
+  });
+}
+
+// ================================
+// 🔁 Navegação entre seções
+// ================================
+const cameraSection = document.getElementById("cameraSection");
+const gallerySection = document.getElementById("gallerySection");
+
+document.getElementById("btnCamera").addEventListener("click", () => {
+  cameraSection.classList.remove("hidden");
+  gallerySection.classList.add("hidden");
+  startCamera();
+});
+
+document.getElementById("btnGallery").addEventListener("click", async () => {
+  cameraSection.classList.add("hidden");
+  gallerySection.classList.remove("hidden");
+  renderGallery();
+});
+
+document.getElementById("backToCamera").addEventListener("click", () => {
+  gallerySection.classList.add("hidden");
+  cameraSection.classList.remove("hidden");
+  startCamera();
+});
+
+// Iniciar câmera ao carregar
+startCamera();

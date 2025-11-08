@@ -1,33 +1,21 @@
 {
-    "name": "camera",
-    "short_name": "pc",
-    "icons": [
-        {
-            "src": "images/camera_128.png",
-            "sizes": "128x128",
-            "type": "image/png"
-        },
-        {
-            "src": "images/camera_256.png",
-            "sizes": "256x256",
-            "type": "image/png"
-        },
-        {
-            "src": "images/camera_512.png",
-            "sizes": "512x512",
-            "type": "image/png"
-        },
-        {
-            "src": "images/camera_64.png",
-            "sizes": "256x256",
-            "type": "image/png",
-            "purpose": "maskable"
-        }
-    ],
-    "lang": "pt-BR",
-    "start_url": "/index.html",
-    "display": "standalone",
-    "background_color": "white",
-    "theme_color": "white"
+  "name": "Diário Fotográfico Offline",
+  "short_name": "Diário Foto",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#222222",
+  "description": "Captura e salva fotos localmente, exibindo uma galeria offline.",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
-
